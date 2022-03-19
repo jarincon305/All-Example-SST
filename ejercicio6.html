@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://momentjs.com/downloads/moment.js"></script>
+    <title>Ejercicio 6</title>
+</head>
+<body>
+    <div class="card text-center">
+        <div class="card-header">
+          Ejercicio 6
+        </div>
+        <div class="card-body">
+            <div class="form-group">
+                <label class="col-sm-12 control-label">Consumir Api</label>
+                <div class="col-sm-12">
+                    <table class="table mt-2">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Fecha</th>
+                                <th scope="col">Tipo de cambio</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let now = moment().format('YYYY-MM-DD');
+        // Se obtiene año y mes
+        let yearAndMonth = moment().format('YYYY-MM');
+        // Se obtiene dia y se resta 5
+        let day = moment().format('DD') - 5;
+        // Se concatena año mes con el dia para pasarle el endPoint
+        let concatAfter = yearAndMonth + '-' + day;
+
+        // funcion anonima se crea promesa
+        (async () => {
+            let response = await fetch(`https://www.banxico.org.mx/SieAPIRest/service/v1/series/SF43718/datos/${concatAfter}/${now}?token=469e861a6920c5efad8d9331c0ad7407d16ba0e6a8f477978c323e8102ab0c7c`, {
+                method: 'GET',
+            });
+            // se obtiene la respuesta
+            let user = await response.json();
+            user.bmx.series[0].datos.forEach((value, key) => {
+                // se agrega al tbody
+                $('tbody').append(`
+                <tr>
+                    <td>${key + 1}</td>
+                    <td>${value.fecha}</td>
+                    <td>${value.dato}</td>
+                </tr>`);
+            });
+        })();
+    </script>
+</body>
+</html>
